@@ -152,7 +152,6 @@ App.nodes = Ember.ArrayController.create({
           node
             .set("disk", (data.nodes[node_id]['indices']['store']['size_in_bytes']/1000000).toFixed(2) + " MB")
             .set("docs", data.nodes[node_id]['indices']['docs']['count'])
-            .set("load", data.nodes[node_id]['os']['cpu']['load_average'].toFixed(3))
             .set("load", use_load_avg['1m'].toFixed(3) + ', ' + use_load_avg['5m'].toFixed(3) + ', ' + use_load_avg['15m'].toFixed(3))
             .set("cpu",  data.nodes[node_id]['process']['cpu']['percent'])
             .set("jvm_heap_used", (data.nodes[node_id]['jvm']['mem']['heap_used_in_bytes']/1000000).toFixed(2))
