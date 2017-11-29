@@ -120,9 +120,11 @@ App.nodes = Ember.ArrayController.create({
         var node = self.findProperty("id", node_id)
                     .set("name",         data.nodes[node_id]['name'])
                     .set("hostname",     data.nodes[node_id]['host'])
-                    .set("http_address", data.nodes[node_id]['http_address'])
+                    .set("ip_address",   data.nodes[node_id]['ip'])
+                    .set("version",      data.nodes[node_id]['version'])
                     .set("jvm_heap_max", (data.nodes[node_id]['jvm']['mem']['heap_max_in_bytes']/1000000).toFixed(2) + " MB")
                     .set("start_time",   data.nodes[node_id]['jvm']['start_time'])
+                    .set("gc_in_use",    data.nodes[node_id]['jvm']['mem']['gc_collectors'].join(', '))
       }
 
       // Remove missing nodes from the collection
@@ -145,10 +147,12 @@ App.nodes = Ember.ArrayController.create({
       for (var node_id in data.nodes) {
         var node = self.findProperty("id", node_id)
         if (node) {
+          var use_load_avg = data.nodes[node_id]['os']['cpu']['load_average'];
           node
             .set("disk", (data.nodes[node_id]['indices']['store']['size_in_bytes']/1000000).toFixed(2) + " MB")
             .set("docs", data.nodes[node_id]['indices']['docs']['count'])
-            .set("load", data.nodes[node_id]['os']['load_average'].toFixed(3))
+            .set("load", data.nodes[node_id]['os']['cpu']['load_average'].toFixed(3))
+            .set("load", use_load_avg['1m'].toFixed(3) + ', ' + use_load_avg['5m'].toFixed(3) + ', ' + use_load_avg['15m'].toFixed(3))
             .set("cpu",  data.nodes[node_id]['process']['cpu']['percent'])
             .set("jvm_heap_used", (data.nodes[node_id]['jvm']['mem']['heap_used_in_bytes']/1000000).toFixed(2))
         }
