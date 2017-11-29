@@ -117,14 +117,15 @@ App.nodes = Ember.ArrayController.create({
     var __load_nodes_info = function(data) {
       for (var node_id in data.nodes) {
         if ( !self.contains(node_id) ) self.addObject(App.Node.create({ id: node_id }))
+        var use_start_time = new Date(data.nodes[node_id]['jvm']['start_time_in_millis'])
         var node = self.findProperty("id", node_id)
                     .set("name",         data.nodes[node_id]['name'])
                     .set("hostname",     data.nodes[node_id]['host'])
                     .set("ip_address",   data.nodes[node_id]['ip'])
                     .set("version",      data.nodes[node_id]['version'])
                     .set("jvm_heap_max", (data.nodes[node_id]['jvm']['mem']['heap_max_in_bytes']/1000000).toFixed(2) + " MB")
-                    .set("start_time",   data.nodes[node_id]['jvm']['start_time'])
-                    .set("gc_in_use",    data.nodes[node_id]['jvm']['mem']['gc_collectors'].join(', '))
+                    .set("start_time",   use_start_time.toISOString())
+                    .set("gc_in_use",    data.nodes[node_id]['jvm']['gc_collectors'].join(', '))
       }
 
       // Remove missing nodes from the collection
